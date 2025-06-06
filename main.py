@@ -53,7 +53,7 @@ end_iso = end_time.isoformat(timespec='milliseconds').replace('+00:00', 'Z')
 
 print("Start of today:", start_iso)
 print("End of today:", end_iso)
-sys.stdout = open('output.txt', 'w', encoding='utf-8')
+# sys.stdout = open('output.txt', 'w', encoding='utf-8')
 
 def get_exchange_rate(url, location):
     # Try using the API endpoint directly
@@ -197,19 +197,23 @@ def update_erp_data(headers, ERP_API_BASE, key, rate):
 
 
 if __name__ == "__main__":
-    with open('output.txt', 'w', encoding='utf-8') as f:
-        original_stdout = sys.stdout
-        sys.stdout = f
-        # All prints here go to the file
-        print("This will go to the file.")
-        # Call your function
-        # pt_rate = get_exchange_rate(PT_url, 'PT')
-        # cz_rate = get_exchange_rate(CZ_url, 'CZ')
-        mx_rate = get_exchange_rate(MX_url, 'MX')
-        # print("pt_rate: ", pt_rate)
-        # print("cz_rate: ", cz_rate)
-        print("mx_rate: ", mx_rate)
-        # print(update_erp_data(PT_headers, PT_ERP_API_BASE, dollar_key, pt_rate))
-        # print(update_erp_data(CZ_headers, CZ_ERP_API_BASE, euro_key, cz_rate))
-        print(update_erp_data(MX_headers, MX_ERP_API_BASE, dollar_key, mx_rate))
-        sys.stdout = original_stdout  # Restore normal printing
+    # with open('output.txt', 'w', encoding='utf-8') as f:
+    #     original_stdout = sys.stdout
+    #     sys.stdout = f
+    #     # All prints here go to the file
+    #     print("This will go to the file.")
+    #     # Call your function
+    #     # pt_rate = get_exchange_rate(PT_url, 'PT')
+    #     # cz_rate = get_exchange_rate(CZ_url, 'CZ')
+    #     mx_rate = get_exchange_rate(MX_url, 'MX')
+    #     # print("pt_rate: ", pt_rate)
+    #     # print("cz_rate: ", cz_rate)
+    #     print("mx_rate: ", mx_rate)
+    #     # print(update_erp_data(PT_headers, PT_ERP_API_BASE, dollar_key, pt_rate))
+    #     # print(update_erp_data(CZ_headers, CZ_ERP_API_BASE, euro_key, cz_rate))
+    #     print(update_erp_data(MX_headers, MX_ERP_API_BASE, dollar_key, mx_rate))
+    #     sys.stdout = original_stdout  # Restore normal printing
+
+    mx_rate = get_exchange_rate(MX_url, 'MX')
+    print("mx_rate: ", mx_rate)
+    print(update_erp_data(MX_headers, MX_ERP_API_BASE, dollar_key, mx_rate))
