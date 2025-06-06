@@ -1,0 +1,5 @@
+This will go to the file.
+mx_rate:  0.052164840897235255
+[update_container_location] payload:  {"inputs": {"Add_By": 16746621, "Currency_Exchange_Type_Key": 13, "Currency_Key": 1, "Date_Start": "2025-06-07T07:00:00.000Z", "Date_End": "2025-06-09T00:00:00.000Z", "Exchange_Rate": 0.052164840897235255}}
+[update_container_location] response:  {'outputs': {'Currency_Exchange_Key': 150920, 'Error_Message': None}, 'tables': [], 'transactionNo': '5'}
+True
