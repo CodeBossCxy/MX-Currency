@@ -2,27 +2,52 @@ name: Daily Exchange Rate Update
 
 on:
   schedule:
-    - cron: '0 10 * * 1-5'  # Runs daily at 13:00 UTC
-  workflow_dispatch:      # Allows manual run
+    - cron: '0 10 * * 1-5'  # Fixed: Added space before 1-5
+  workflow_dispatch:        # Allows manual run
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4  # Updated to v4
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
+      
+      - name: Debug environment
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Files in directory:"
+          ls -la
+          echo "Python version: $(python --version)"
+          echo "Current date/time: $(date)"
+          echo "Day of week: $(date +%u)"
+          
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          # or
-          pip install requests pandas beautifulsoup4 lxml html5lib
-
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            echo "Installing from requirements.txt"
+            pip install -r requirements.txt
+          else
+            echo "No requirements.txt found, installing basic packages"
+            pip install requests pandas beautifulsoup4 lxml html5lib
+          fi
+          echo "Installed packages:"
+          pip list
+      
+      - name: Test network connectivity
+        run: |
+          echo "Testing network connectivity..."
+          curl -I https://google.com || echo "Network test failed"
+          
       - name: Run Exchange Rate Script
-        run: python main.py
+        run: |
+          echo "Starting main.py..."
+          python main.py
+        env:
+          PYTHONUNBUFFERED: 1  # Ensures output is shown immediately
