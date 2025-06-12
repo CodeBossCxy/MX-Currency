@@ -8,6 +8,9 @@ import json
 import sys
 import pandas as pd
 from datetime import datetime, timezone, timedelta
+import certifi
+
+
 
 PT_ERP_API_BASE = "https://Vintech-PT.on.plex.com/api/datasources/"
 CZ_ERP_API_BASE = "https://Vintech-CZ.on.plex.com/api/datasources/"
@@ -93,7 +96,8 @@ def get_exchange_rate(url, location):
     
     try:
         # Try without proxy first
-        response = scraper.get(url, headers=headers, timeout=15)
+        # response = scraper.get(url, headers=headers, timeout=15)
+        response = scraper.get(url, headers=headers, timeout=15, verify=certifi.where())
         
         # If that fails, try with proxies
         if response.status_code == 403:
