@@ -9,8 +9,10 @@ import sys
 import pandas as pd
 from datetime import datetime, timezone, timedelta
 import certifi
+import urllib3
 
-
+# Suppress SSL warnings when verification is disabled
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 PT_ERP_API_BASE = "https://Vintech-PT.on.plex.com/api/datasources/"
 CZ_ERP_API_BASE = "https://Vintech-CZ.on.plex.com/api/datasources/"
@@ -95,9 +97,13 @@ def get_exchange_rate(url, location):
     time.sleep(random.uniform(1, 3))
     
     try:
-        # Try without proxy first
-        # response = scraper.get(url, headers=headers, timeout=15)
-        response = scraper.get(url, headers=headers, timeout=15, verify=certifi.where())
+        # Try without proxy first with SSL verification disabled for problematic sites
+        if location == 'MX':
+            # For Mexican government site, disable SSL verification
+            response = scraper.get(url, headers=headers, timeout=15, verify=False)
+        else:
+            # For other sites, use normal SSL verification
+            response = scraper.get(url, headers=headers, timeout=15, verify=certifi.where())
         
         # If that fails, try with proxies
         if response.status_code == 403:
@@ -107,7 +113,7 @@ def get_exchange_rate(url, location):
                         "http": proxy,
                         "https": proxy
                     }
-                    response = scraper.get(url, headers=headers, proxies=proxy_dict, timeout=15)
+                    response = scraper.get(url, headers=headers, proxies=proxy_dict, timeout=15, verify=False)
                     if response.status_code == 200:
                         # print(response.json())
                         break
