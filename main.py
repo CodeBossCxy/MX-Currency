@@ -85,25 +85,24 @@ def get_exchange_rate(url, location):
         # Add more proxies here
     ]
 
-    # Create scraper with browser-like settings
-    scraper = cloudscraper.create_scraper(
-        browser={
-            'browser': 'chrome',
-            'platform': 'windows',
-            'mobile': False
-        }
-    )
-    
     time.sleep(random.uniform(1, 3))
     
     try:
-        # Try without proxy first with SSL verification disabled for problematic sites
         if location == 'MX':
-            # For Mexican government site, disable SSL verification
-            response = scraper.get(url, headers=headers, timeout=15, verify=False)
+            # For Mexican government site, use regular requests with SSL verification disabled
+            session = requests.Session()
+            session.verify = False
+            response = session.get(url, headers=headers, timeout=15)
         else:
-            # For other sites, use normal SSL verification
-            response = scraper.get(url, headers=headers, timeout=15, verify=certifi.where())
+            # For other sites, use cloudscraper with normal SSL verification
+            scraper = cloudscraper.create_scraper(
+                browser={
+                    'browser': 'chrome',
+                    'platform': 'windows',
+                    'mobile': False
+                }
+            )
+            response = scraper.get(url, headers=headers, timeout=15)
         
         # If that fails, try with proxies
         if response.status_code == 403:
@@ -113,7 +112,10 @@ def get_exchange_rate(url, location):
                         "http": proxy,
                         "https": proxy
                     }
-                    response = scraper.get(url, headers=headers, proxies=proxy_dict, timeout=15, verify=False)
+                    if location == 'MX':
+                        response = session.get(url, headers=headers, proxies=proxy_dict, timeout=15)
+                    else:
+                        response = scraper.get(url, headers=headers, proxies=proxy_dict, timeout=15)
                     if response.status_code == 200:
                         # print(response.json())
                         break
